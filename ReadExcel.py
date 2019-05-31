@@ -33,38 +33,53 @@ for keys,values in ExcelIndex.items():
     print(keys)
     print(values)
 
-##########read input table############
-def get_section_properties(ws,section_headings_start_col, section_values_start_col, section_start_row):
+##########read excel tabs############
+def get_properties(ws,headings_start_col, values_start_col, start_row):
     
-    #while cell is not none
-        #column_index_from_string() + 3
-        #get_column_letter()
-    section_type = {};
-    current_property_col = section_headings_start_col;
-    current_value_col = section_values_start_col;
+    parameter = 'unknown'
+    if ws['A1'].value == 'Section #':
+        parameter = 'Section'
+    else:
+        parameter = 'Material'
+
+    parameter_type = {};
+    current_property_col = headings_start_col;
+    current_value_col = values_start_col;
     i = 1 
     while ws[current_property_col+str(1)].value is not None:
-        current_row = section_start_row
-        section_type['Section'+str(i)]={}
+        current_row = start_row
+        parameter_type[parameter+' '+str(i)]={}
         while ws[current_property_col + str(current_row)].value is not None:
-            section_properties = {}
-            section_properties_heading = ws[current_property_col + str(current_row)].value
-            section_properties_value = ws[current_value_col + str(current_row)].value
+            properties = {}
+            properties_heading = ws[current_property_col + str(current_row)].value
+            properties_value = ws[current_value_col + str(current_row)].value
 
             #enter the new entry into the index
-            section_type['Section'+str(i)][section_properties_heading] = section_properties_value
+            parameter_type[parameter+' '+str(i)][properties_heading] = properties_value
             current_row = current_row + 1
         i += 1
         current_property_col = get_column_letter(column_index_from_string(current_property_col)+3)
         current_value_col = get_column_letter(column_index_from_string(current_value_col)+3)
-    return section_type
+    return parameter_type
 
 ws_section = wb.get_sheet_by_name('Section Properties')
-SectionProperties = get_section_properties(ws_section, 'A', 'B',4) #or use ExcelIndex 
+SectionProperties = get_properties(ws_section, 'A', 'B',4) #or use ExcelIndex 
 
+ws_materials = wb.get_sheet_by_name('Materials')
+Materials = get_properties(ws_materials,'A','B',4)
+
+
+#testing
 for keys,values in SectionProperties.items():
     print(keys)
     print(values)
+
+    #testing
+for keys,values in Materials.items():
+    print(keys)
+    print(values)
+
+
 
 #def read_input_table(ws,floor_col,properties_col,floor_row):
 
