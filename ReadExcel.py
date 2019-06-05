@@ -95,26 +95,33 @@ def get_node_info(ws, headings_col, horiz_col, vert_col, start_row):
 ws_nodes = wb.get_sheet_by_name('Bracing')
 Nodes = get_node_info(ws_nodes,'A','B','C',4)
 
-def get_bracing(ws,headings_col,section_col,start_node_col,end_node_col,start_row):
+def get_floor_or_bracing(ws,headings_col,section_col,start_node_col,end_node_col,start_row):
+
+    parameter = 'unknown'
+    if ws['A1'].value == 'Bracing #':
+        parameter = 'Bracing '
+    else:
+        parameter = 'Floor Plan '
+
     bracing_index = {}
     current_headings_col = headings_col
     current_section_col = section_col
     current_start_node_col = start_node_col
     current_end_node_col = end_node_col
     i = 1
-    
+
     while ws[current_headings_col+str(4)].value is not None:
-        bracing_index['Bracing '+str(i)] = {}
+        bracing_index[parameter+str(i)] = {}
         current_row = start_row
         j = 1
         while ws[current_headings_col + str(current_row)].value is not None:
-            bracing_index['Bracing '+str(i)]['Member '+str(j)] = {}
+            bracing_index[parameter+str(i)]['Member '+str(j)] = {}
             section = ws[current_section_col + str(current_row)].value
             start_node = ws[current_start_node_col + str(current_row)].value
             end_node = ws[current_end_node_col + str(current_row)].value
             #enter the new entry into the index
-            bracing_index['Bracing '+str(i)] ['Member '+str(j)]['section type']=SectionProperties["Section "+str(section)]
-            bracing_index['Bracing '+str(i)] ['Member '+str(j)]['nodes']=[Nodes["Node "+str(start_node)],Nodes["Node "+str(end_node)]]
+            bracing_index[parameter+str(i)] ['Member '+str(j)]['section type']=SectionProperties["Section "+str(section)]
+            bracing_index[parameter+str(i)] ['Member '+str(j)]['nodes']=[Nodes["Node "+str(start_node)],Nodes["Node "+str(end_node)]]
             current_row = current_row + 1
             j += 1
         i += 1
@@ -125,7 +132,8 @@ def get_bracing(ws,headings_col,section_col,start_node_col,end_node_col,start_ro
     return bracing_index
 
 ws_bracing = wb.get_sheet_by_name('Bracing')
-Bracing = get_bracing(ws_bracing,'D','E','F','G',4)
+ws_floor_plans = wb.get_sheet_by_name('Floor Plans')
+Bracing = get_floor_or_bracing(ws_floor_plans,'D','E','F','G',4)
 
 for keys,values in Bracing.items():
     print(keys)
