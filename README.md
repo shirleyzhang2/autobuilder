@@ -8,4 +8,4 @@ in terms of their seismic performance.
 
 This project was developed in 2019 by the University of Toronto Seismic Design Team.
 
-For the most up-to-date version, see Autobuilder 3.0 which offers more flexibility in design and a functional GUI interface.
+For the most up-to-date version, see Autobuilder 3.0 which offers more flexibility in design and a functional user interface.
